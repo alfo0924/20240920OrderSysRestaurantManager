@@ -6,6 +6,11 @@ const Register = {
             <input v-model="username" type="text" placeholder="用戶名" required>
             <input v-model="email" type="email" placeholder="電子郵件" required>
             <input v-model="password" type="password" placeholder="密碼" required>
+            <select v-model="role" required>
+                <option value="">請選擇角色</option>
+                <option value="ROLE_RESTAURANT_MANAGER">餐廳管理者</option>
+                <option value="ROLE_RESTAURANT_STAFF">餐廳員工</option>
+            </select>
             <button type="submit">註冊</button>
         </form>
         <p><a href="#" @click="$emit('switch-to-login')">返回登入</a></p>
@@ -15,13 +20,25 @@ const Register = {
         return {
             username: '',
             email: '',
-            password: ''
+            password: '',
+            role: ''
         }
     },
     methods: {
         register() {
-            // 實現註冊邏輯
-            console.log('註冊', this.username, this.email, this.password);
+            axios.post('/api/users/register', {
+                username: this.username,
+                email: this.email,
+                password: this.password,
+                role: this.role
+            })
+                .then(response => {
+                    alert('註冊成功');
+                    this.$emit('switch-to-login');
+                })
+                .catch(error => {
+                    alert('註冊失敗: ' + error.response.data);
+                });
         }
     }
 };
